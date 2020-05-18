@@ -4,8 +4,8 @@ The pan-genome of a species is the union of the genes and non-coding sequences p
 PanViz is reference-agnostic visualization of pan-genomes. It is a novel representation method based on the notion of consensus ordering that enables an intuitive, effective and interactive visualization of a pan-genome. The utility of such representation is visulizaed on  a web-based pan-genome browser that can present complex structural genomic variations.
 
 ##Using PanViz
-### Python pipeline dependencies
-PanViz requires the following CPAN-Perl modules to be installed:
+### Installation
+PanViz requires the following python packages installed:
 -   [alignment](https://pypi.org/project/alignment/)
 
 -   [Biopython](https://biopython.org)
@@ -17,7 +17,19 @@ PanViz requires the following CPAN-Perl modules to be installed:
 -   [recollecion](https://pypi.org/project/recollection/)
 
 
-### Installation
+	#Install from github and install all dependencies listed above
 	git clone https://github.com/qihualiang/PanViz.git
+
+### Usage
+[ProgressiveMauve](http://darlinglab.org/mauve/user-guide/progressivemauve.html) is run to generate multiple sequence alignments for all the genomes within the pan-genomes. 
+
+Edit `globalVariables.py` to indicate:
+-    Output of ProgressiveMauve
+-    Genome sequences in pan-genomes
+-    Number of chromosomes/contigs to be considered
+
+Run PanViz pipeline as:
+	python PanViz.py
+
 
 ![panviz\[fig1\]](docs/figs/flowchart.jpg)
