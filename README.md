@@ -36,5 +36,16 @@ Run PanViz pipeline as:
 python PanViz.py
 ```
 
+Example:
+To run PanViz on Arabidopsis pan-genomes with sequences of chromosome one for three different accessions, move the globalVariables file:
+```
+mv example/globalVariables.py pipeline/
+```
+Then run PanViz pipeline as:
+```
+cd pipeline
+python PanViz.py
+```
+
 ### Workflow
 ![panviz\[fig1\]](docs/figs/flowchart.jpg)
