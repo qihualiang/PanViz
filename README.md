@@ -19,8 +19,8 @@ PanViz requires the following python packages installed:
 
 
 ```
-	#Install from github and install all dependencies listed above
-	git clone https://github.com/qihualiang/PanViz.git
+#Install from github and install all dependencies listed above
+git clone https://github.com/qihualiang/PanViz.git
 ```
 
 ### Usage
@@ -33,8 +33,8 @@ Edit `globalVariables.py` to indicate:
 
 Run PanViz pipeline as:
 ```
-	python PanViz.py
+python PanViz.py
 ```
 
-
+### Workflow
 ![panviz\[fig1\]](docs/figs/flowchart.jpg)
