@@ -64,7 +64,7 @@ Then run PanViz pipeline as:
 python PanViz.py
 ```
 This will generate a dotplot comparing core blocks of each accessions to consensus ordering. 
-<img src="docs/figs/arabidopsisDotplot.png" width="300">
+<img src="docs/figs/arabidopsisDotplot.png" width="400">
 
 This will also generate three unaligned BED files for the input genomes to be viewed in PanViz Genome Viewer. All blocks are at their acutal coordinates along each genome.
 ![panviz\[fig3\]](docs/figs/arabidopsisPanVizUnaligned.png)
