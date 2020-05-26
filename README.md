@@ -66,10 +66,10 @@ python PanViz.py
 This will generate a dotplot comparing core blocks of each accessions to consensus ordering. 
 <img src="docs/figs/arabidopsisDotplot.png" width="600">
 
-This will also generate three unaligned BED files for the input genomes to be viewed in PanViz Genome Viewer. All blocks are at their acutal coordinates along each genome.
+This will also generate three unaligned BED files for the input genomes to be viewed in PanViz Genome Viewer. All blocks are at their acutal coordinates along each genome. Here for block C9, it is at different locations at each genome.
 ![panviz\[fig3\]](docs/figs/arabidopsisPanVizUnaligned.png)
 
-If BED files are set to be aligned by `BEDaligned`, C-blocks will be gapped and aligned to their corresponding ordinates on consensus ordering. 
+If BED files are set to be aligned by `BEDaligned`, C-blocks will be gapped and aligned to their corresponding ordinates on consensus ordering. Here for the same block C9, it is at same locations for each genome as in consensus ordering.
 ![panviz\[fig4\]](docs/figs/arabidopsisPanVizAligned.png)
 
 
