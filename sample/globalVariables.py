@@ -1,10 +1,11 @@
 MauveExecutable = "/home/qliang/0.soft/Mauve/mauve_snapshot_2015-02-13/linux-x64/progressiveMauve"
-inputGenomes = ["example/GCA_000001735.2_TAIR10.1_genomic.fna", "example/GCA_001651475.1_Ler_Assembly_genomic.fna", "example/GCA_900660825.1_Ath.Ler-0.MPIPZ.v1.0_genomic.fna"]
+inputGenomes = ["sample/GCA_000001735.2_TAIR10.1_genomic.fna", "sample/GCA_001651475.1_Ler_Assembly_genomic.fna", "sample/GCA_900660825.1_Ath.Ler-0.MPIPZ.v1.0_genomic.fna"]
 
-XMFAFile = "example/output.xmfa"
+XMFAFile = "sample/output.xmfa"
 
 numOfGenomes = 3
 numOfChrms = 1
+alnScoreThr = 0.5
 
 BEDaligned = False  ## whether to align all C blocks
 outBEDConsensus = "PGV.consensus.bed"
