@@ -48,6 +48,9 @@ Edit `globalVariables.py` to indicate:
 -    `BEDaligned` Whether to align core blocks in accession with corresponding core blocks in consensus
 -    `color` Colors used for different blocks in PanViz Genome Viewer [optional]
 
+numOfChrms: ProgressiveMauve concatenates all chromosomes/contigs of one genome into one long sequence. In order to seperate chromosomes, users should specifiy number of chromosomes to be considered when generating dotplot and BED files for visualization.
+
+
 Run PanViz pipeline as:
 ```
 python PanViz.py
@@ -71,9 +74,5 @@ This will also generate three unaligned BED files for the input genomes to be vi
 
 If BED files are set to be aligned by `BEDaligned`, C-blocks will be gapped and aligned to their corresponding ordinates on consensus ordering. Here for the same block C9, it is at same locations for each genome as in consensus ordering.
 ![panviz\[fig4\]](docs/figs/arabidopsisPanVizAligned.png)
-
-
-
-
 
 
