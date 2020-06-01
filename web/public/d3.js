@@ -11,15 +11,32 @@ data = [];
 yDomain = [];
 let globalFiles = [];
 
+
+CanvasRenderingContext2D.prototype.fillPolygon = function (pointsArray, fillColor, strokeColor) {
+    if (pointsArray.length <= 0) return;
+    this.moveTo(pointsArray[0][0], pointsArray[0][1]);
+    for (var i = 0; i < pointsArray.length; i++) {
+        this.lineTo(pointsArray[i][0], pointsArray[i][1]);
+    }
+    if (strokeColor != null && strokeColor != undefined)
+        this.strokeStyle = strokeColor;
+
+    if (fillColor != null && fillColor != undefined) {
+        this.fillStyle = fillColor;
+        this.fill();
+    }
+}
+
 function parseFileData(file, extension, fileName) {
   let format = {
     "bed": {
-      "delimiter": " ",
+      "delimiter": "\t",
       "parser": function(d, i) {
           var row = {};
 					if (d.length != 9) {
 						return null;
 					}
+          row.strand = d[5];
 					row.track = d[0];
 					row.start = d[1];
 					row.end = d[2];
@@ -44,6 +61,7 @@ function parseFileData(file, extension, fileName) {
           }
 					row.start = d[3];
 					row.end = d[4];
+          row.strand = d[6];
 					row.file = fileName;
 					row.color = '#6f6f6f'
 					return row;
@@ -195,7 +213,7 @@ function bindButtons(data) {
   })
   d3.select("#windowLeft")
     .on("change", function(e) {
-      windowLeft = Math.max(oriLeft, +d3.select('#windowLeft').property('value'));
+      windowLeft = Math.min(Math.max(oriLeft, +d3.select('#windowLeft').property('value')), windowRight - 1);
       bindData(data);
       draw();
     })
@@ -212,9 +230,6 @@ function bindButtons(data) {
         return d.name != null && d3.select("#search-input").property("value") != null 
         && d.name.toLowerCase() == d3.select("#search-input").property("value").toLowerCase();
       })[0];
-      if (selectedData == null) {
-        alert("Gene not found!");
-      }
       var foundSet = {};
       data.forEach(d => {
         if (d.name != null && d3.select("#search-input").property("value") != null 
@@ -276,11 +291,16 @@ function bindData(data) {
   dataBinding.enter()
     .append("custom")
     .classed("rect", true)
+    .attr("strand", function(d) {return d.strand;})
     .attr("x", function(d) { return x(+d.start);})
     .attr("y", function(d) { return y(d.file);} )
     .attr("width", function(d) { return x(+d.end) - x(+d.start);})
     .attr("height", function(d) { return y.bandwidth()})
     .attr("fillStyle", function(d) {return d.color});
+}
+
+function resize() {
+  
 }
 
 function draw() {
@@ -311,10 +331,26 @@ function draw() {
   var elements = dataContainer.selectAll("custom.rect");
   elements.each(function(d) {
     var node = d3.select(this);
-    
     context.beginPath();
-    context.fillStyle = node.attr("fillStyle");
-    context.fillRect(node.attr("x"), node.attr("y"), node.attr("width"), node.attr("height"));
+    //context.fillStyle = node.attr("fillStyle");
+    var pstyle = node.attr("fillStyle");
+    var px = Number(node.attr("x"));
+    var py = Number(node.attr("y"));
+    var pwidth = Number(node.attr("width"));
+    var pheight = Number(node.attr("height"));
+    var pangle = Math.min(20, Math.min(pwidth, 20));
+    //(oriRight - oriLeft) / (windowRight - windowLeft)
+    var parr;
+    if (node.attr("strand") == "-") {
+      parr = [[px, py + pheight/2], [px + pangle, py],[px+pwidth, py],[px+pwidth, py+pheight],[px + pangle, py+pheight]];
+    } else if (node.attr("strand") == "+") {
+      parr = [[px, py], [px + pwidth - pangle, py],[px + pwidth, py + pheight / 2],[px + pwidth - pangle, py + pheight],[px, py + pheight]];
+    } else {
+      parr = [[py, py],[px + pwidth, py],[px + pwidth, py + pheight],[px, py + pheight]];
+    }
+    context.fillPolygon(parr, pstyle, pstyle);
+//    context.fillStyle = node.attr("fillStyle");
+//    context.fillRect(node.attr("x"), node.attr("y"), node.attr("width"), node.attr("height"));
     context.closePath();
   });
   
@@ -411,18 +447,7 @@ function onMouseUp() {
     yDomain[index] = yDomain[dragIndex];
     yDomain[dragIndex] = temp;
     y.domain(yDomain);
-
-    dataContainer.selectAll("custom.rect").remove();
-    dataBinding = dataContainer.selectAll("custom.rect")
-      .data(filtered, function(d) { return d; });
-    dataBinding.enter()
-      .append("custom")
-      .classed("rect", true)
-      .attr("x", function(d) { return x(+d.start);})
-      .attr("y", function(d) { return y(d.file);} )
-      .attr("width", function(d) { return x(+d.end) - x(+d.start);})
-      .attr("height", function(d) { return y.bandwidth()})
-      .attr("fillStyle", function(d) {return d.color});
+    bindData(data);
     draw();
     d3.select(this).style("cursor", "default"); 
   } else if (horizontalDragging) {
@@ -451,13 +476,13 @@ function onMouseUpdate() {
 
     yDomain.forEach((t, i) => {
       if (i == dragIndex) {
-        context.font = "12px Roboto";
+        context.font = "12px Helvetica Neue";
         context.fillStyle = "black";
-        context.fillText(t, 0, mouse[1] + y.bandwidth()/2 + 6, textWidth);
+        context.fillText(t, 20, mouse[1] + y.bandwidth()/2 + 6, textWidth);
       } else {
-        context.font = "12px Roboto";
+        context.font = "12px Helvetica Neue";
         context.fillStyle = "black";
-        context.fillText(t, 0, y(t) + y.bandwidth()/2 + 6, textWidth);
+        context.fillText(t, 20, y(t) + y.bandwidth()/2 + 6, textWidth);
       }
     })
   }
@@ -545,4 +570,5 @@ function updateModal() {
 $('#removeModal').on('show.bs.modal', function(d) {
   updateModal();
 })
+
 
