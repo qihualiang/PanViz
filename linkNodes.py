@@ -3,10 +3,8 @@ from getTop2 import getTop2
 
 def linkNodes(unlink):
     linked = dict()
-
     while bool(unlink):
         curNode, neighbors = unlink.popitem()
-
         ## two most common neighbor nodes without ties
         top2c = getTop2(neighbors)
         top2 = []
@@ -16,7 +14,6 @@ def linkNodes(unlink):
         curPath = [curNode]
         extendLeft = False
         extendRight = False
-
         if len(top2) == 1:
             curPath = [top2[0], curNode]
             extendLeft = True
@@ -24,8 +21,6 @@ def linkNodes(unlink):
             curPath = [top2[0], curNode, top2[1]]
             extendLeft = True
             extendRight = True
-
-
         while extendLeft:
             leftNode = curPath[0]
             if leftNode in unlink:
@@ -33,7 +28,6 @@ def linkNodes(unlink):
                 unlink.pop(leftNode)
             else:
                 top2 = []
-            
             ## pick the next one to append to the left
             for node in top2:
                 if node not in curPath:
@@ -57,7 +51,6 @@ def linkNodes(unlink):
                     extendLeft = False
                 else: 
                     extendLeft = False ##add May13
-
         while extendRight:
             rightNode = curPath[-1]
             if rightNode in unlink:
@@ -65,7 +58,6 @@ def linkNodes(unlink):
                 unlink.pop(rightNode)
             else:
                 top2 = []
-
             for node in top2:
                 if node not in curPath:
                     rightNode = node
@@ -85,10 +77,7 @@ def linkNodes(unlink):
                     extendRight = False
                 else:
                     extendRight = False ##add May13
-
         linked[curPath[0]] = curPath
         linked[curPath[-1]] = curPath
 
-
     return linked
-

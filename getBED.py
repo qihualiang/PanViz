@@ -14,13 +14,13 @@ def getBED(consensus, nodeOrders, nodeLengths, chrmEndNodes, chrmEndCNodes):
 		occurences = Counter(candidateCNodes)
 		consensusEndCNodes.append(occurences.most_common(1)[0][0])
 
-	#### insert dummyHead into consensus/nodeOrder
-	consensusWhead = ["dummyHead"] # consensusWhead = dummy, chr1, dummy, chr2... dummy, contigs
+	#### insert dummy into consensus/nodeOrder
+	consensusWhead = ["dummy"] # consensusWhead = dummy, chr1, dummy, chr2... dummy, contigs
 	for Cnode in consensus:
 		consensusWhead.append(Cnode)
 		if Cnode in consensusEndCNodes:
-			consensusWhead.append("dummyHead")
-	consensusWhead.append("dummyTail")
+			consensusWhead.append("dummy")
+	consensusWhead.append("dummy")
 
 	AllCnodes = list()
 	nodeOrdersWhead = list()
@@ -28,16 +28,16 @@ def getBED(consensus, nodeOrders, nodeLengths, chrmEndNodes, chrmEndCNodes):
 		nodeOrder = nodeOrders[i]
 		Cnodes = list()
 		chrmEndNode = chrmEndNodes[i]
-		nodeOrderWhead = ["dummyHead"]
+		nodeOrderWhead = ["dummy"]
 		for node in nodeOrder:
 			nodeOrderWhead.append(node)
 			if node.startswith("C"):
 				Cnodes.append(node)
 			if node in chrmEndNode:
-				nodeOrderWhead.append("dummyHead")
-				Cnodes.append("dummyHead")
-		Cnodes.append("dummyTail")
-		nodeOrderWhead.append("dummyTail")
+				nodeOrderWhead.append("dummy")
+				Cnodes.append("dummy")
+		Cnodes.append("dummy")
+		nodeOrderWhead.append("dummy")
 		AllCnodes.append(Cnodes)
 		nodeOrdersWhead.append(nodeOrderWhead)
 
@@ -53,7 +53,7 @@ def getBED(consensus, nodeOrders, nodeLengths, chrmEndNodes, chrmEndCNodes):
 	for i in range(numOfGenomes):
 		nodeOrder = nodeOrdersWhead[i]
 		chrmEndNode = chrmEndNodes[i]
-		prevNode = "dummyHead"
+		prevNode = "dummy"
 		lengthsBetweenInterval = 0
 		for node in nodeOrder:
 			if node.startswith("C"):
@@ -78,10 +78,9 @@ def getBED(consensus, nodeOrders, nodeLengths, chrmEndNodes, chrmEndCNodes):
 	startPos = 1
 	chrmCount = 0
 
-	prev = "dummyHead"
+	prev = "dummy"
 
 	OUTconsensus = open(outBEDConsensus, "w")
-	#print >>OUTconsensus, "track itemRgb=On useScore=1"
 	for i in range(len(consensusWhead)):
 		currNode = consensusWhead[i]
 		if currNode.startswith("C"):
@@ -91,8 +90,7 @@ def getBED(consensus, nodeOrders, nodeLengths, chrmEndNodes, chrmEndCNodes):
 				chrmName = "chr"+str(chrmCount)
 			else:
 				chrmName = "contigs"
-			#print >>OUTconsensus, chrmName, startPos, endPos, currNode,". .", startPos, endPos, colorConsensus
-			print(chrmName, startPos, endPos, currNode, ". +", startPos, endPos,  colorConsensus, file=OUTconsensus)
+			print(chrmName, startPos, endPos, currNode, 1, "+", startPos, endPos,  colorConsensus, sep='\t', file=OUTconsensus)
 			Cstarts[currNode] = (chrmCount, startPos)
 			prevC[currNode] = prev
 			neighborCsNoDirection[currNode] = set([prev, consensusWhead[i+1]])
@@ -123,27 +121,22 @@ def getBED(consensus, nodeOrders, nodeLengths, chrmEndNodes, chrmEndCNodes):
 				endPos = startPos + nodeLengths[currNode][i]
 				Cindex = AllCnodes[i].index(currNode)
 				if neighborCsWDirection[currNode] == [AllCnodes[i][Cindex-1], AllCnodes[i][Cindex+1]]: ## same prev and next
-					#print >>outFile, chrmName, startPos, endPos, currNode, 1, ".", startPos, endPos, colorC
-                                        print(chrmName, startPos, endPos, currNode, 1, "+", startPos, endPos, colorC, file=outFile)
+					print(chrmName, startPos, endPos, currNode, 1, "+", startPos, endPos, colorC, sep='\t', file=outFile)
 				elif neighborCsNoDirection[currNode] == set([AllCnodes[i][Cindex-1], AllCnodes[i][Cindex+1]]): ## rev
-					#print >>outFile, chrmName, startPos, endPos, currNode, 1, ".", startPos, endPos, colorCrev
-                                        print(chrmName, startPos, endPos, currNode, 1, "-", startPos, endPos, colorCrev, file=outFile)
+					print(chrmName, startPos, endPos, currNode, 1, "-", startPos, endPos, colorCrev, sep='\t', file=outFile)
 				else: ## translocation
-					#print >>outFile, chrmName, startPos, endPos, currNode, 1, ".", startPos, endPos, colorCtransloc
-                                        print(chrmName, startPos, endPos, currNode, 1, "+", startPos, endPos, colorCtrans, file=outFile)
+					print(chrmName, startPos, endPos, currNode, 1, "+", startPos, endPos, colorCtrans, sep='\t', file=outFile)
 				startPos = endPos + 1
 
 			elif currNode.startswith("D"):
 				endPos = startPos + nodeLengths[currNode][i]
-				#print >>outFile, chrmName, startPos, endPos, currNode, 1, ".", startPos, endPos, colorP
-				print(chrmName, startPos, endPos, currNode, 1, "+", startPos, endPos, colorP, file=outFile)
+				print(chrmName, startPos, endPos, currNode, 1, "+", startPos, endPos, colorP, sep='\t', file=outFile)
 				startPos = endPos + 1
 			elif currNode.startswith("U"):
 				endPos = startPos + nodeLengths[currNode][i]
-				#print >>outFile, chrmName , startPos, endPos, currNode, 1000, ".", startPos, endPos, colorU
-				print(chrmName, startPos, endPos, currNode, 1, "+", startPos, endPos, colorU, file=outFile)
+				print(chrmName, startPos, endPos, currNode, 1, "+", startPos, endPos, colorU, sep='\t', file=outFile)
 				startPos = endPos + 1
-			else: ## dummyHead/Tail
+			else: ## dummy/Tail
 				chrmCount += 1
 				startPos = 1
 
